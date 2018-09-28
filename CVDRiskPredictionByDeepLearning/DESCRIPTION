@@ -1,0 +1,29 @@
+Package: CVDRiskPredictionByDeepLearning
+Type: Package
+Title: A Package Skeleton for Patient Level Prediction Studies
+Version: 0.0.1
+Author: Seng Chan You [aut, cre]
+Maintainer: Seng Chan You <applegna@gmail.com>
+Description: A skeleton package, to be used as a starting point when implementing patient-level prediction studies.
+Depends:
+    DatabaseConnector
+Imports:
+    SqlRender,
+    Cyclops,
+    FeatureExtraction,
+    PatientLevelPrediction,
+    ggplot2,
+    ff,
+    ffbase,
+    OhdsiSharing,
+    zip,
+	  OhdsiRTools (>= 1.5.0)
+Suggests:
+    knitr,
+    rmarkdown,
+    DT,
+    shiny
+License: Apache License 2.0
+VignetteBuilder: knitr
+LazyData: TRUE
+RoxygenNote: 6.0.1.9000
