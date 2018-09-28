@@ -72,11 +72,9 @@ createAnalysesDetails <- function(workFolder) {
                                                                    includedCovariateIds = c())
   
   covariateSettingList <- list(covariateSettings1) 
-  
   # ADD COHORTS
   cohortIds <- c(873)  # add all your Target cohorts here
   outcomeIds <- c(756)   # add all your outcome cohorts here
-  
   
   # this will then generate and save the json specification for the analysis
   PatientLevelPrediction::savePredictionAnalysisList(workFolder=workFolder,
