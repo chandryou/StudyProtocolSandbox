@@ -188,7 +188,7 @@ execute <- function(connectionDetails,
                                                       washoutPeriod = 0, 
                                                       sampleSize = NULL,
                                                       temporalCovariateSettings)
-  PatientLevelPrediction::savePlpData(temporalPlpData,file.path(ouputFolder,"CIReNN"))
+  PatientLevelPrediction::savePlpData(temporalPlpData,file.path(ouputFolder,"Analysis_CIReNN"))
   temporalPopulation<-PatientLevelPrediction::createStudyPopulation(temporalPlpData, 
                                                                     population = NULL, 
                                                                     binary = TRUE,
@@ -220,9 +220,9 @@ execute <- function(connectionDetails,
                                                 testSplit = "person",
                                                 testFraction = 0.2,
                                                 nfold = 3,
-                                                saveDirectory =  file.path(ouputFolder,"CIReNN"))
-  PatientLevelPrediction::savePlpModel(CIReNNModel$model,dirPath = file.path(ouputFolder,"CIReNN"))
-  PatientLevelPrediction::savePlpResult(CIReNNModel,file.path(ouputFolder,"CIReNN"))
+                                                saveDirectory =  file.path(ouputFolder,"Analysis_CIReNN"))
+  PatientLevelPrediction::savePlpModel(CIReNNModel$model,dirPath = file.path(ouputFolder,"Analysis_CIReNN"))
+  PatientLevelPrediction::savePlpResult(CIReNNModel,file.path(ouputFolder,"Analysis_CIReNN"))
   
   }
   
