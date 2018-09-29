@@ -145,8 +145,8 @@ execute <- function(connectionDetails,
   # temporalPredictionAnalysisList$outputFolder = file.path(outputFolder,"temporal")
   # 
   # temporalResult <- do.call(PatientLevelPrediction::runPlpAnalyses, temporalPredictionAnalysisList)
-    if (!file.exists(file.path(ouputFolder,"Analysis_CIReNN"))){
-      dir.create(file.path(ouputFolder,"Analysis_CIReNN"))
+    if (!file.exists(file.path(outputFolder,"Analysis_CIReNN"))){
+      dir.create(file.path(outputFolder,"Analysis_CIReNN"))
     }  
     
     initialstartDay = -3650
@@ -192,7 +192,7 @@ execute <- function(connectionDetails,
                                                         washoutPeriod = 0, 
                                                         sampleSize = NULL,
                                                         temporalCovariateSettings)
-    PatientLevelPrediction::savePlpData(temporalPlpData,file.path(ouputFolder,"Analysis_CIReNN"))
+    PatientLevelPrediction::savePlpData(temporalPlpData,file.path(outputFolder,"Analysis_CIReNN"))
     temporalPopulation<-PatientLevelPrediction::createStudyPopulation(temporalPlpData, 
                                                                       population = NULL, 
                                                                       binary = TRUE,
@@ -224,9 +224,9 @@ execute <- function(connectionDetails,
                                                   testSplit = "person",
                                                   testFraction = 0.2,
                                                   nfold = 3,
-                                                  saveDirectory =  file.path(ouputFolder,"Analysis_CIReNN"))
-    PatientLevelPrediction::savePlpModel(CIReNNModel$model,dirPath = file.path(ouputFolder,"Analysis_CIReNN"))
-    PatientLevelPrediction::savePlpResult(CIReNNModel,file.path(ouputFolder,"Analysis_CIReNN"))
+                                                  saveDirectory =  file.path(outputFolder,"Analysis_CIReNN"))
+    PatientLevelPrediction::savePlpModel(CIReNNModel$model,dirPath = file.path(outputFolder,"Analysis_CIReNN"))
+    PatientLevelPrediction::savePlpResult(CIReNNModel,file.path(outputFolder,"Analysis_CIReNN"))
     
   }
   
