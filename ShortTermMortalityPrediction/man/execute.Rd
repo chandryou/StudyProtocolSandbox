@@ -5,11 +5,12 @@
 \title{Execute the Study}
 \usage{
 execute(connectionDetails, cdmDatabaseSchema,
+  cdmDatabaseName = "friendly database name",
   cohortDatabaseSchema = cdmDatabaseSchema, cohortTable = "cohort",
-  outcomeDatabaseSchema = cohortDatabaseSchema, outcomeTable = cohortTable,
   oracleTempSchema = cohortDatabaseSchema, outputFolder,
-  createCohorts = TRUE, packageResults = TRUE, minCellCount = 5,
-  packageName = "ShortTermMortalityPrediction")
+  createCohorts = TRUE, runAnalyses = T, runTemporalAnalyses = TRUE,
+  createValidationPackage = TRUE, packageResults = TRUE, minCellCount = 5,
+  cdmVersion = 5)
 }
 \arguments{
 \item{connectionDetails}{An object of type \code{connectionDetails} as created using the
@@ -20,20 +21,14 @@ DatabaseConnector package.}
 Note that for SQL Server, this should include both the database and
 schema name, for example 'cdm_data.dbo'.}
 
+\item{cdmDatabaseName}{Shareable name of the database}
+
 \item{cohortDatabaseSchema}{Schema name where intermediate data can be stored. You will need to have
 write priviliges in this schema. Note that for SQL Server, this should
 include both the database and schema name, for example 'cdm_data.dbo'.}
 
 \item{cohortTable}{The name of the table that will be created in the work database schema.
 This table will hold the target population cohorts used in this
-study.}
-
-\item{outcomeDatabaseSchema}{Schema name where intermediate data can be stored. You will need to have
-write priviliges in this schema. Note that for SQL Server, this should
-include both the database and schema name, for example 'cdm_data.dbo'.}
-
-\item{outcomeTable}{The name of the table that will be created in the work database schema.
-This table will hold the outcome cohorts used in this
 study.}
 
 \item{oracleTempSchema}{Should be used in Oracle to specify a schema where the user has write
@@ -45,12 +40,18 @@ performance.}
 
 \item{createCohorts}{Create the cohortTable table with the target population and outcome cohorts?}
 
+\item{runAnalyses}{Run the model development}
+
+\item{runTemporalAnalyses}{Run the temporal model development}
+
+\item{createValidationPackage}{Create a package for sharing the models}
+
 \item{packageResults}{Should results be packaged for later sharing?}
 
 \item{minCellCount}{The minimum number of subjects contributing to a count before it can be included 
 in packaged results.}
 
-\item{packageName}{The name of the package}
+\item{cdmVersion}{The version of the common data model}
 }
 \description{
 Execute the Study
@@ -67,10 +68,17 @@ connectionDetails <- createConnectionDetails(dbms = "postgresql",
 
 execute(connectionDetails,
         cdmDatabaseSchema = "cdm_data",
+        cdmDatabaseName = 'shareable name of the database'
         cohortDatabaseSchema = "study_results",
         cohortTable = "cohort",
         oracleTempSchema = NULL,
-        outputFolder = "c:/temp/study_results")
+        outputFolder = "c:/temp/study_results", 
+        createCohorts = T,
+        runAnalyses = T,
+        createValidationPackage = T,
+        packageResults = F,
+        minCellCount = 5,
+        cdmVersion = 5)
 }
 
 }

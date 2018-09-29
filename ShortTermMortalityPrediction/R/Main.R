@@ -130,22 +130,98 @@ execute <- function(connectionDetails,
   
   if(runTemporalAnalyses){
   
-  temporalPredictionAnalysisListFile <- system.file("settings",
-                                            "temporalPredictionAnalysisList.json",
-                                            package = "ShortTermMortalityPrediction")
-  temporalPredictionAnalysisList <- PatientLevelPrediction::loadPredictionAnalysisList(temporalPredictionAnalysisListFile)
-  temporalPredictionAnalysisList$connectionDetails = connectionDetails
-  temporalPredictionAnalysisList$cdmDatabaseSchema = cdmDatabaseSchema
-  temporalPredictionAnalysisList$cdmDatabaseName = cdmDatabaseName
-  temporalPredictionAnalysisList$oracleTempSchema = oracleTempSchema
-  temporalPredictionAnalysisList$cohortDatabaseSchema = cohortDatabaseSchema
-  temporalPredictionAnalysisList$cohortTable = cohortTable
-  temporalPredictionAnalysisList$outcomeDatabaseSchema = cohortDatabaseSchema
-  temporalPredictionAnalysisList$outcomeTable = cohortTable
-  temporalPredictionAnalysisList$cdmVersion = cdmVersion
-  temporalPredictionAnalysisList$outputFolder = file.path(outputFolder,"temporal")
+  # temporalPredictionAnalysisListFile <- system.file("settings",
+  #                                           "temporalPredictionAnalysisList.json",
+  #                                           package = "ShortTermMortalityPrediction")
+  # temporalPredictionAnalysisList <- PatientLevelPrediction::loadPredictionAnalysisList(temporalPredictionAnalysisListFile)
+  # temporalPredictionAnalysisList$connectionDetails = connectionDetails
+  # temporalPredictionAnalysisList$cdmDatabaseSchema = cdmDatabaseSchema
+  # temporalPredictionAnalysisList$cdmDatabaseName = cdmDatabaseName
+  # temporalPredictionAnalysisList$oracleTempSchema = oracleTempSchema
+  # temporalPredictionAnalysisList$cohortDatabaseSchema = cohortDatabaseSchema
+  # temporalPredictionAnalysisList$cohortTable = cohortTable
+  # temporalPredictionAnalysisList$outcomeDatabaseSchema = cohortDatabaseSchema
+  # temporalPredictionAnalysisList$outcomeTable = cohortTable
+  # temporalPredictionAnalysisList$cdmVersion = cdmVersion
+  # temporalPredictionAnalysisList$outputFolder = file.path(outputFolder,"temporal")
+  # 
+  # temporalResult <- do.call(PatientLevelPrediction::runPlpAnalyses, temporalPredictionAnalysisList)
+  window_period_days = 14
+  day_interval=2
+  initial_start_day=-14
   
-  temporalResult <- do.call(PatientLevelPrediction::runPlpAnalyses, temporalPredictionAnalysisList)
+  #startDays = seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval)
+  startDays = c(-99999,-60,-30, seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval))
+  #endDays = seq(from=initial_start_day+day_interval-1,length.out=(abs(initial_start_day)/day_interval),by = day_interval)
+  endDays = c(-61,-31,-15, seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval)+1)
+  endDays[length(endDays)]<-0
+
+  temporalCovariateSettings <- FeatureExtraction::createTemporalCovariateSettings(useConditionOccurrence = TRUE,
+                                                                                  useDrugExposure = TRUE,
+                                                                                  useProcedureOccurrence = TRUE, 
+                                                                                  useDeviceExposure = TRUE,
+                                                                                  useMeasurement = TRUE, 
+                                                                                  useMeasurementValue = TRUE,
+                                                                                  useMeasurementRangeGroup = TRUE, 
+                                                                                  useObservation = TRUE,
+                                                                                  temporalStartDays = startDays, 
+                                                                                  temporalEndDays = endDays,
+                                                                                  includedCovariateConceptIds = c(), 
+                                                                                  addDescendantsToInclude = FALSE,
+                                                                                  excludedCovariateConceptIds = c(), 
+                                                                                  addDescendantsToExclude = FALSE,
+                                                                                  includedCovariateIds = c())
+  temporalPlpData<-PatientLevelPrediction::getPlpData(connectionDetails, 
+                                                      cdmDatabaseSchema,
+                                                      oracleTempSchema = oracleTempSchema, 
+                                                      cohortId=872, 
+                                                      outcomeIds=20,#list(3,1430),
+                                                      studyStartDate = "", 
+                                                      studyEndDate = "",
+                                                      cohortDatabaseSchema = cdmDatabaseSchema, 
+                                                      cohortTable = cohortTable,
+                                                      outcomeDatabaseSchema = cdmDatabaseSchema, 
+                                                      outcomeTable = cohortTable,
+                                                      cdmVersion = "5", excludeDrugsFromCovariates = F,
+                                                      firstExposureOnly = FALSE, 
+                                                      washoutPeriod = 0, 
+                                                      sampleSize = NULL,
+                                                      temporalCovariateSettings)
+  PatientLevelPrediction::savePlpData(temporalPlpData,file.path(ouputFolder,"CIReNN"))
+  temporalPopulation<-PatientLevelPrediction::createStudyPopulation(temporalPlpData, 
+                                                                    population = NULL, 
+                                                                    binary = TRUE,
+                                                                    outcomeId=756,
+                                                                    includeAllOutcomes = T, 
+                                                                    firstExposureOnly = FALSE, 
+                                                                    washoutPeriod = 0,
+                                                                    removeSubjectsWithPriorOutcome = TRUE, 
+                                                                    priorOutcomeLookback = 99999,
+                                                                    requireTimeAtRisk = TRUE, 
+                                                                    minTimeAtRisk = 1, 
+                                                                    addExposureDaysToStart = FALSE, 
+                                                                    riskWindowStart = 1,
+                                                                    addExposureDaysToEnd = FALSE,
+                                                                    riskWindowEnd = 14)
+  CIReNNSetting<-PatientLevelPrediction::setCIReNN(units=c(64), recurrentDropout=c(0.3),lr =c(1e-4), decay=c(1e-5), 
+                                                   outcomeWeight = c(1.0),
+                                                   batchSize = c(200), 
+                                                   epochs = c(100),
+                                                   earlyStoppingMinDelta = c(1e-03), earlyStoppingPatience = c(5),
+                                                   useVae =T, vaeDataSamplingProportion = 1.0, vaeValidationSplit = 0.2,
+                                                   vaeBatchSize = 100L, vaeLatentDim = 256, vaeIntermediateDim = 1024L,
+                                                   vaeEpoch = 100L, vaeEpislonStd = 1.0, seed = NULL)
+  
+  CIReNNModel <- PatientLevelPrediction::runPlp(temporalPopulation,
+                                                temporalPlpData,
+                                                minCovariateFraction = 0.001,
+                                                modelSettings = CIReNNSetting,
+                                                testSplit = "person",
+                                                testFraction = 0.2,
+                                                nfold = 3,
+                                                saveDirectory =  file.path(ouputFolder,"CIReNN"))
+  PatientLevelPrediction::savePlpModel(CIReNNModel$model,dirPath = file.path(ouputFolder,"CIReNN"))
+  PatientLevelPrediction::savePlpResult(CIReNNModel,file.path(ouputFolder,"CIReNN"))
   }
   
   if (packageResults) {
