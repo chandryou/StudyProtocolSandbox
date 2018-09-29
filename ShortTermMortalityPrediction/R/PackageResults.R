@@ -42,8 +42,8 @@ packageResults <- function(outputFolder,
     if (!file.exists(file.path(exportFolder,folder))){
       dir.create(file.path(exportFolder,folder), recursive = T)
     }
-    
-    # loads analysis results
+    try(
+      # loads analysis results
     plpResult <- PatientLevelPrediction::loadPlpResult(file.path(outputFolder,folder, 'plpResult'))
     
     if(minCellCount!=0){
@@ -66,6 +66,8 @@ packageResults <- function(outputFolder,
                                            includePredictionDistribution=T,
                                            includeCovariateSummary=T)
     }
+    )
+    
   }
   
   
