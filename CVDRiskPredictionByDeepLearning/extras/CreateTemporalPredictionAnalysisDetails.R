@@ -53,9 +53,9 @@ createTemporalAnalysesDetails <- function(workFolder) {
   # 2) ADD POPULATIONS you want
 
   temporalPopulation<-PatientLevelPrediction::createStudyPopulationSettings(riskWindowStart = 1, 
-                                        riskWindowEnd = 180,
+                                        riskWindowEnd = 1,
                                         requireTimeAtRisk = T, 
-                                        minTimeAtRisk = 179, 
+                                        minTimeAtRisk = 1825, 
                                         includeAllOutcomes = T)
   
   temporalPopulationSettingList <- list(temporalPopulation)

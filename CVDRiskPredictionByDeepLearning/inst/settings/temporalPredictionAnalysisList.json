@@ -55,10 +55,10 @@
       "removeSubjectsWithPriorOutcome": true,
       "priorOutcomeLookback": 99999,
       "requireTimeAtRisk": true,
-      "minTimeAtRisk": 179,
+      "minTimeAtRisk": 1825,
       "riskWindowStart": 1,
       "addExposureDaysToStart": false,
-      "riskWindowEnd": 180,
+      "riskWindowEnd": 1,
       "addExposureDaysToEnd": false,
       "verbosity": "INFO",
       "attr_class": "populationSettings"
