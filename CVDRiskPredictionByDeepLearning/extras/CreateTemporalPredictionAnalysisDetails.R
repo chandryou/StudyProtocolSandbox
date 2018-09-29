@@ -26,16 +26,18 @@
 #' 
 
 createTemporalAnalysesDetails <- function(workFolder) {
-  
-  window_period_days = 14
-  day_interval=2
-  initial_start_day=-14
-  
-  #startDays = seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval)
-  startDays = c(-99999,-60,-30, seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval))
-  #endDays = seq(from=initial_start_day+day_interval-1,length.out=(abs(initial_start_day)/day_interval),by = day_interval)
-  endDays = c(-61,-31,-15, seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval)+1)
+  initialstartDay = -3650
+  initialendDay = -1826
+  startDay = -1825
+  dayInterval= 180
+
+  startDays = c(initialstartDay, seq(from=startDay,length.out=abs(startDay)/dayInterval, by = dayInterval))
+  endDays = c(initialendDay, seq(from=startDay+dayInterval-1,length.out=abs(startDay)/dayInterval, by = dayInterval))
   endDays[length(endDays)]<-0
+  startDays<-c(startDays,1,91)
+  endDays<-c(endDays,90,180)
+  startDays<-startDays-180
+  endDays<-endDays-180
   
   # 1) ADD MODELS you want
   temporalModelSettingList<-list(PatientLevelPrediction::setCIReNN(units=c(64), recurrentDropout=c(0.3),lr =c(1e-4), decay=c(1e-5), 
@@ -51,9 +53,9 @@ createTemporalAnalysesDetails <- function(workFolder) {
   # 2) ADD POPULATIONS you want
 
   temporalPopulation<-PatientLevelPrediction::createStudyPopulationSettings(riskWindowStart = 1, 
-                                        riskWindowEnd = 14,
+                                        riskWindowEnd = 180,
                                         requireTimeAtRisk = T, 
-                                        minTimeAtRisk = 1, 
+                                        minTimeAtRisk = 179, 
                                         includeAllOutcomes = T)
   
   temporalPopulationSettingList <- list(temporalPopulation)

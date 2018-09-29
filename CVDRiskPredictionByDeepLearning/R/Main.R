@@ -124,12 +124,27 @@ execute <- function(connectionDetails,
   predictionAnalysisList$outcomeDatabaseSchema = cohortDatabaseSchema
   predictionAnalysisList$outcomeTable = cohortTable
   predictionAnalysisList$cdmVersion = cdmVersion
-  predictionAnalysisList$outputFolder = outputFolder
+  predictionAnalysisList$outputFolder = file.path(outputFolder,"nontemporal")
   
   result <- do.call(PatientLevelPrediction::runPlpAnalyses, predictionAnalysisList)
   }
   if (runTemporalAnalyses){
-    print("Currently No Temporal Analyses")
+  temporalPredictionAnalysisListFile <- system.file("settings",
+                                            "temporalPredictionAnalysisList.json",
+                                            package = "CVDRiskPredictionByDeepLearning")
+  temporalPredictionAnalysisList <- PatientLevelPrediction::loadPredictionAnalysisList(temporalPredictionAnalysisListFile)
+  temporalPredictionAnalysisList$connectionDetails = connectionDetails
+  temporalPredictionAnalysisList$cdmDatabaseSchema = cdmDatabaseSchema
+  temporalPredictionAnalysisList$cdmDatabaseName = cdmDatabaseName
+  temporalPredictionAnalysisList$oracleTempSchema = oracleTempSchema
+  temporalPredictionAnalysisList$cohortDatabaseSchema = cohortDatabaseSchema
+  temporalPredictionAnalysisList$cohortTable = cohortTable
+  temporalPredictionAnalysisList$outcomeDatabaseSchema = cohortDatabaseSchema
+  temporalPredictionAnalysisList$outcomeTable = cohortTable
+  temporalPredictionAnalysisList$cdmVersion = cdmVersion
+  temporalPredictionAnalysisList$outputFolder = file.path(outputFolder,"temporal")
+  
+  temporalResult <- do.call(PatientLevelPrediction::runPlpAnalyses, temporalPredictionAnalysisList)
   }
   
   if (packageResults) {
