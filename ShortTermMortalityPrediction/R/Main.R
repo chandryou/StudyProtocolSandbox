@@ -39,6 +39,7 @@
 #'                             performance.
 #' @param createCohorts        Create the cohortTable table with the target population and outcome cohorts?
 #' @param runAnalyses          Run the model development
+#' @param runTemporalAnalyses  Run the temporal model development
 #' @param createValidationPackage  Create a package for sharing the models 
 #' @param packageResults       Should results be packaged for later sharing?     
 #' @param minCellCount         The minimum number of subjects contributing to a count before it can be included 
@@ -77,6 +78,7 @@ execute <- function(connectionDetails,
                     outputFolder,
                     createCohorts = TRUE,
                     runAnalyses = T,
+                    runTemporalAnalyses = TRUE,
                     createValidationPackage = TRUE,
                     packageResults = TRUE,
                     minCellCount= 5,
@@ -124,6 +126,9 @@ execute <- function(connectionDetails,
   predictionAnalysisList$outputFolder = file.path(outputFolder,"nontemporal")
   
   result <- do.call(PatientLevelPrediction::runPlpAnalyses, predictionAnalysisList)
+  }
+  
+  if(runTemporalAnalyses){
   
   temporalPredictionAnalysisListFile <- system.file("settings",
                                             "temporalPredictionAnalysisList.json",
