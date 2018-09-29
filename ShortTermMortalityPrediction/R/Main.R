@@ -129,7 +129,10 @@ execute <- function(connectionDetails,
   }
   
   if(runTemporalAnalyses){
-  
+    
+    if (!file.exists(file.path(ouputFolder,"Analysis_CIReNN"))){
+      dir.create(file.path(ouputFolder,"Analysis_CIReNN"))
+    }
   # temporalPredictionAnalysisListFile <- system.file("settings",
   #                                           "temporalPredictionAnalysisList.json",
   #                                           package = "ShortTermMortalityPrediction")
