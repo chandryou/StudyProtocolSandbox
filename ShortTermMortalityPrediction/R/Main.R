@@ -123,7 +123,7 @@ execute <- function(connectionDetails,
   predictionAnalysisList$outcomeDatabaseSchema = cohortDatabaseSchema
   predictionAnalysisList$outcomeTable = cohortTable
   predictionAnalysisList$cdmVersion = cdmVersion
-  predictionAnalysisList$outputFolder = file.path(outputFolder,"nontemporal")
+  predictionAnalysisList$outputFolder = outputFolder
   
   result <- do.call(PatientLevelPrediction::runPlpAnalyses, predictionAnalysisList)
   }
@@ -149,14 +149,13 @@ execute <- function(connectionDetails,
   # temporalPredictionAnalysisList$outputFolder = file.path(outputFolder,"temporal")
   # 
   # temporalResult <- do.call(PatientLevelPrediction::runPlpAnalyses, temporalPredictionAnalysisList)
-  window_period_days = 14
   day_interval=2
   initial_start_day=-14
   
   #startDays = seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval)
-  startDays = c(-99999,-60,-30, seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval))
+  startDays = c(-730, seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval))
   #endDays = seq(from=initial_start_day+day_interval-1,length.out=(abs(initial_start_day)/day_interval),by = day_interval)
-  endDays = c(-61,-31,-15, seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval)+1)
+  endDays = c(-15, seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval)+1)
   endDays[length(endDays)]<-0
 
   temporalCovariateSettings <- FeatureExtraction::createTemporalCovariateSettings(useConditionOccurrence = TRUE,
@@ -194,14 +193,14 @@ execute <- function(connectionDetails,
   temporalPopulation<-PatientLevelPrediction::createStudyPopulation(temporalPlpData, 
                                                                     population = NULL, 
                                                                     binary = TRUE,
-                                                                    outcomeId=756,
+                                                                    outcomeId=20,
                                                                     includeAllOutcomes = T, 
                                                                     firstExposureOnly = FALSE, 
                                                                     washoutPeriod = 0,
                                                                     removeSubjectsWithPriorOutcome = TRUE, 
                                                                     priorOutcomeLookback = 99999,
                                                                     requireTimeAtRisk = TRUE, 
-                                                                    minTimeAtRisk = 1, 
+                                                                    minTimeAtRisk = 13, 
                                                                     addExposureDaysToStart = FALSE, 
                                                                     riskWindowStart = 1,
                                                                     addExposureDaysToEnd = FALSE,

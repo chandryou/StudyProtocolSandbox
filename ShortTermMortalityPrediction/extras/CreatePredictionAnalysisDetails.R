@@ -39,7 +39,7 @@ createAnalysesDetails <- function(workFolder) {
   pop1 <- PatientLevelPrediction::createStudyPopulationSettings(riskWindowStart = 1, 
                                         riskWindowEnd = 14,
                                         requireTimeAtRisk = T, 
-                                        minTimeAtRisk = 1, 
+                                        minTimeAtRisk = 13, 
                                         includeAllOutcomes = T)
   populationSettingList <- list(pop1)
   

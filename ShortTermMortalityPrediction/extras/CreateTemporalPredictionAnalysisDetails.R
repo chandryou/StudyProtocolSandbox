@@ -27,14 +27,13 @@
 
 createTemporalAnalysesDetails <- function(workFolder) {
   
-  window_period_days = 14
   day_interval=2
   initial_start_day=-14
   
   #startDays = seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval)
-  startDays = c(-99999,-60,-30, seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval))
+  startDays = c(-730, seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval))
   #endDays = seq(from=initial_start_day+day_interval-1,length.out=(abs(initial_start_day)/day_interval),by = day_interval)
-  endDays = c(-61,-31,-15, seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval)+1)
+  endDays = c(-15, seq(from=initial_start_day,length.out=abs(initial_start_day)/day_interval, by = day_interval)+1)
   endDays[length(endDays)]<-0
   
   # 1) ADD MODELS you want
@@ -53,7 +52,7 @@ createTemporalAnalysesDetails <- function(workFolder) {
   temporalPopulation<-PatientLevelPrediction::createStudyPopulationSettings(riskWindowStart = 1, 
                                         riskWindowEnd = 14,
                                         requireTimeAtRisk = T, 
-                                        minTimeAtRisk = 1, 
+                                        minTimeAtRisk = 13, 
                                         includeAllOutcomes = T)
   
   temporalPopulationSettingList <- list(temporalPopulation)
