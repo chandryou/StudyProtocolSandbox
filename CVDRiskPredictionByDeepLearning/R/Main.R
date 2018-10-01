@@ -82,7 +82,8 @@ execute <- function(connectionDetails,
                     createValidationPackage = TRUE,
                     packageResults = TRUE,
                     minCellCount= 5,
-                    cdmVersion = 5) {
+                    cdmVersion = 5,
+                    sampleSize=NULL) {
   if (!file.exists(outputFolder))
     dir.create(outputFolder, recursive = TRUE)
 
@@ -152,15 +153,15 @@ execute <- function(connectionDetails,
     initialstartDay = -3650
     initialendDay = -1826
     startDay = -1825
+    endDay = -181
     dayInterval= 180
     
-    startDays = c(initialstartDay, seq(from=startDay,length.out=abs(startDay)/dayInterval, by = dayInterval))
-    endDays = c(initialendDay, seq(from=startDay+dayInterval-1,length.out=abs(startDay)/dayInterval, by = dayInterval))
-    endDays[length(endDays)]<-0
-    startDays<-c(startDays,1,91)
-    endDays<-c(endDays,90,180)
-    startDays<-startDays-180
-    endDays<-endDays-180
+    startDays = c(initialstartDay, seq(from=startDay,to = -360, by = dayInterval))
+    endDays = c(initialendDay, seq(from=startDay+dayInterval-1,to = -180, by = dayInterval))
+    endDays[length(endDays)]= -181
+    startDays<-c(startDays,-180,-90)
+    endDays<-c(endDays,-91,0)
+    
     temporalCovariateSettings <- FeatureExtraction::createTemporalCovariateSettings(useConditionOccurrence = TRUE,
                                                                                     useDrugExposure = TRUE,
                                                                                     useProcedureOccurrence = TRUE, 
@@ -187,12 +188,13 @@ execute <- function(connectionDetails,
                                                         cohortTable = cohortTable,
                                                         outcomeDatabaseSchema = cdmDatabaseSchema, 
                                                         outcomeTable = cohortTable,
-                                                        cdmVersion = "5", excludeDrugsFromCovariates = F,
+                                                        cdmVersion = "5", 
+                                                        excludeDrugsFromCovariates = F,
                                                         firstExposureOnly = FALSE, 
                                                         washoutPeriod = 0, 
-                                                        sampleSize = NULL,
+                                                        sampleSize = sampleSize,
                                                         temporalCovariateSettings)
-    PatientLevelPrediction::savePlpData(temporalPlpData,file.path(outputFolder,"Analysis_CIReNN"))
+    #PatientLevelPrediction::savePlpData(temporalPlpData,file.path(outputFolder,"Analysis_CIReNN"))
     temporalPopulation<-PatientLevelPrediction::createStudyPopulation(temporalPlpData, 
                                                                       population = NULL, 
                                                                       binary = TRUE,
@@ -209,13 +211,13 @@ execute <- function(connectionDetails,
                                                                       addExposureDaysToEnd = FALSE,
                                                                       riskWindowEnd = 1825)
     CIReNNSetting<-PatientLevelPrediction::setCIReNN(units=c(64), recurrentDropout=c(0.3),lr =c(1e-4), decay=c(1e-5), 
-                                                     outcomeWeight = c(1.0),
+                                                     outcomeWeight = c(1.0,10.0),
                                                      batchSize = c(200), 
                                                      epochs = c(100),
                                                      earlyStoppingMinDelta = c(1e-03), earlyStoppingPatience = c(5),
-                                                     useVae =T, vaeDataSamplingProportion = 1.0, vaeValidationSplit = 0.2,
+                                                     useVae =T, vaeDataSamplingProportion = 1.0, vaeValidationSplit = 0.3,
                                                      vaeBatchSize = 100L, vaeLatentDim = 256, vaeIntermediateDim = 1024L,
-                                                     vaeEpoch = 100L, vaeEpislonStd = 1.0, seed = NULL)
+                                                     vaeEpoch = 500L, vaeEpislonStd = 1.0, seed = NULL)
     
     CIReNNModel <- PatientLevelPrediction::runPlp(temporalPopulation,
                                                   temporalPlpData,
