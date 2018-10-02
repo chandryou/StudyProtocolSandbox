@@ -97,17 +97,17 @@ execute <- function(connectionDetails,
                   outputFolder = outputFolder)
     
     ##Add 179 days to the cohort_start_date of target
-    connection<-DatabaseConnector::connect(connectionDetails)
-    sql<-"UPDATE @target_database_schema.@target_cohort_table
-          SET cohort_start_date = DATEADD(DAY,179,cohort_start_date)
-          where cohort_definition_id = @target_cohort_id"
-    sql<-SqlRender::renderSql(sql,
-                              target_database_schema = cohortDatabaseSchema,
-                              target_cohort_table = cohortTable,
-                              target_cohort_id = 873)$sql
-    sql <- SqlRender::translateSql(sql,
-                                   targetDialect=connectionDetails$dbms)$sql
-    DatabaseConnector::executeSql(connection,sql)
+    # connection<-DatabaseConnector::connect(connectionDetails)
+    # sql<-"UPDATE @target_database_schema.@target_cohort_table
+    #       SET cohort_start_date = DATEADD(DAY,179,cohort_start_date)
+    #       where cohort_definition_id = @target_cohort_id"
+    # sql<-SqlRender::renderSql(sql,
+    #                           target_database_schema = cohortDatabaseSchema,
+    #                           target_cohort_table = cohortTable,
+    #                           target_cohort_id = 873)$sql
+    # sql <- SqlRender::translateSql(sql,
+    #                                targetDialect=connectionDetails$dbms)$sql
+    # DatabaseConnector::executeSql(connection,sql)
   }
   
   if(runAnalyses){
@@ -148,19 +148,18 @@ execute <- function(connectionDetails,
   # temporalResult <- do.call(PatientLevelPrediction::runPlpAnalyses, temporalPredictionAnalysisList)
     if (!file.exists(file.path(outputFolder,"Analysis_CIReNN"))){
       dir.create(file.path(outputFolder,"Analysis_CIReNN"))
-    }  
+    } 
     
     initialstartDay = -3650
     initialendDay = -1826
     startDay = -1825
-    endDay = -181
     dayInterval= 180
     
-    startDays = c(initialstartDay, seq(from=startDay,to = -360, by = dayInterval))
-    endDays = c(initialendDay, seq(from=startDay+dayInterval-1,to = -180, by = dayInterval))
-    endDays[length(endDays)]= -181
-    startDays<-c(startDays,-180,-90)
-    endDays<-c(endDays,-91,0)
+    startDays = c(initialstartDay, seq(from=startDay,length.out=abs(startDay)/dayInterval, by = dayInterval))
+    endDays = c(initialendDay, seq(from=startDay+dayInterval-1,length.out=abs(startDay)/dayInterval, by = dayInterval))
+    endDays[length(endDays)]<-0
+    startDays<-c(startDays,1,91)
+    endDays<-c(endDays,90,180)
     
     temporalCovariateSettings <- FeatureExtraction::createTemporalCovariateSettings(useConditionOccurrence = TRUE,
                                                                                     useDrugExposure = TRUE,
@@ -224,8 +223,8 @@ execute <- function(connectionDetails,
                                                   minCovariateFraction = 0.001,
                                                   modelSettings = CIReNNSetting,
                                                   testSplit = "person",
-                                                  testFraction = 0.2,
-                                                  nfold = 3,
+                                                  testFraction = 0.3,
+                                                  nfold = 2,
                                                   saveDirectory =  file.path(outputFolder,"Analysis_CIReNN"))
     PatientLevelPrediction::savePlpModel(CIReNNModel$model,dirPath = file.path(outputFolder,"Analysis_CIReNN"))
     PatientLevelPrediction::savePlpResult(CIReNNModel,file.path(outputFolder,"Analysis_CIReNN"))

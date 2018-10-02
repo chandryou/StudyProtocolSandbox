@@ -36,10 +36,10 @@ createAnalysesDetails <- function(workFolder) {
                            )
   
   # 2) ADD POPULATIONS you want
-  pop1 <- PatientLevelPrediction::createStudyPopulationSettings(riskWindowStart = 1, 
+  pop1 <- PatientLevelPrediction::createStudyPopulationSettings(riskWindowStart = 181, 
                                         riskWindowEnd = 1825,
                                         requireTimeAtRisk = T, 
-                                        minTimeAtRisk = 1824, 
+                                        minTimeAtRisk = 1644, 
                                         includeAllOutcomes = T)
   populationSettingList <- list(pop1)
   
@@ -55,18 +55,18 @@ createAnalysesDetails <- function(workFolder) {
                                                                    useDemographicsPostObservationTime = FALSE,
                                                                    useDemographicsTimeInCohort = FALSE,
                                                                    useDemographicsIndexYearMonth = FALSE,
-                                                                   useConditionOccurrenceAnyTimePrior = TRUE,
-                                                                   useDrugExposureAnyTimePrior = TRUE, 
-                                                                   useProcedureOccurrenceAnyTimePrior = TRUE,
-                                                                   useMeasurementAnyTimePrior = TRUE, 
-                                                                   useMeasurementValueAnyTimePrior = TRUE,
-                                                                   useObservationAnyTimePrior = TRUE, 
+                                                                   useConditionOccurrenceLongTerm = TRUE,
+                                                                   useDrugExposureLongTerm = TRUE, 
+                                                                   useProcedureOccurrenceLongTerm = TRUE,
+                                                                   useMeasurementLongTerm = TRUE, 
+                                                                   useMeasurementValueLongTerm = TRUE,
+                                                                   useObservationLongTerm = TRUE, 
                                                                    useCharlsonIndex = FALSE, 
                                                                    useDcsi = FALSE, 
                                                                    useChads2 = FALSE,
                                                                    useChads2Vasc = FALSE, 
-                                                                   longTermStartDays = -365,
-                                                                   mediumTermStartDays = -180, shortTermStartDays = -30, endDays = 0,
+                                                                   longTermStartDays = -3650,
+                                                                   mediumTermStartDays = -180, shortTermStartDays = -30, endDays = 180,
                                                                    includedCovariateConceptIds = c(), addDescendantsToInclude = FALSE,
                                                                    excludedCovariateConceptIds = c(), addDescendantsToExclude = FALSE,
                                                                    includedCovariateIds = c())
@@ -89,8 +89,8 @@ createAnalysesDetails <- function(workFolder) {
                                                      minCovariateFraction=0.001,
                                                      normalizeData=T,
                                                      testSplit='person',
-                                                     testFraction=0.2,
+                                                     testFraction=0.3,
                                                      splitSeed=1,
-                                                     nfold=3,
+                                                     nfold=2,
                                                      verbosity="INFO")
   }

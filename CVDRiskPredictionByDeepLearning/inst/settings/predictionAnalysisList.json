@@ -3,11 +3,11 @@
   "outcomeIds": 756,
   "cohortDefinitions": [
     {
-      "id": "1",
+      "id": "873",
       "name": "Hypertension"
     },
     {
-      "id": "2",
+      "id": "756",
       "name": "AsCVD"
     }
   ],
@@ -19,24 +19,24 @@
     "minCovariateFraction": 0.001,
     "normalizeData": true,
     "testSplit": "person",
-    "testFraction": 0.2,
+    "testFraction": 0.3,
     "splitSeed": 1,
-    "nfold": 3,
+    "nfold": 2,
     "verbosity": "INFO"
   },
   "covariateSettings": [
     {
       "temporal": false,
-      "ConditionOccurrenceAnyTimePrior": true,
-      "DrugExposureAnyTimePrior": true,
-      "ProcedureOccurrenceAnyTimePrior": true,
-      "MeasurementAnyTimePrior": true,
-      "MeasurementValueAnyTimePrior": true,
-      "ObservationAnyTimePrior": true,
-      "longTermStartDays": -365,
+      "ConditionOccurrenceLongTerm": true,
+      "DrugExposureLongTerm": true,
+      "ProcedureOccurrenceLongTerm": true,
+      "MeasurementLongTerm": true,
+      "MeasurementValueLongTerm": true,
+      "ObservationLongTerm": true,
+      "longTermStartDays": -3650,
       "mediumTermStartDays": -180,
       "shortTermStartDays": -30,
-      "endDays": 0,
+      "endDays": 180,
       "includedCovariateConceptIds": [],
       "addDescendantsToInclude": false,
       "excludedCovariateConceptIds": [],
@@ -55,8 +55,8 @@
       "removeSubjectsWithPriorOutcome": true,
       "priorOutcomeLookback": 99999,
       "requireTimeAtRisk": true,
-      "minTimeAtRisk": 1824,
-      "riskWindowStart": 1,
+      "minTimeAtRisk": 1644,
+      "riskWindowStart": 181,
       "addExposureDaysToStart": false,
       "riskWindowEnd": 1825,
       "addExposureDaysToEnd": false,
