@@ -153,7 +153,7 @@ execute <- function(connectionDetails,
     initialstartDay = -3650
     initialendDay = -1826
     startDay = -1825
-    dayInterval= 180
+    dayInterval= 360
     
     startDays = c(initialstartDay, seq(from=startDay,length.out=abs(startDay)/dayInterval, by = dayInterval))
     endDays = c(initialendDay, seq(from=startDay+dayInterval-1,length.out=abs(startDay)/dayInterval, by = dayInterval))
