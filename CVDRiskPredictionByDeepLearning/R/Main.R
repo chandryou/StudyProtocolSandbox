@@ -214,10 +214,10 @@ execute <- function(connectionDetails,
                                                      outcomeWeight = c(10.0),
                                                      batchSize = c(200), 
                                                      epochs = c(100),
-                                                     earlyStoppingMinDelta = c(1e-03), earlyStoppingPatience = c(10),
+                                                     earlyStoppingMinDelta = c(1e-03), earlyStoppingPatience = c(6),
                                                      useVae =T, vaeDataSamplingProportion = 1.0, vaeValidationSplit = 0.3,
                                                      vaeBatchSize = 100L, vaeLatentDim = 256, vaeIntermediateDim = 1024L,
-                                                     vaeEpoch = 500L, vaeEpislonStd = 1.0, seed = NULL)
+                                                     vaeEpoch = 2000L, vaeEpislonStd = 1.0, seed = NULL)
     
     CIReNNModel <- PatientLevelPrediction::runPlp(temporalPopulation,
                                                   temporalPlpData,
