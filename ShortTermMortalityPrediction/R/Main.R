@@ -205,14 +205,24 @@ execute <- function(connectionDetails,
                                                                     riskWindowStart = 1,
                                                                     addExposureDaysToEnd = FALSE,
                                                                     riskWindowEnd = 14)
-  CIReNNSetting<-PatientLevelPrediction::setCIReNN(units=c(64), recurrentDropout=c(0.3),lr =c(1e-4), decay=c(1e-5), 
-                                                   outcomeWeight = c(1.0),
+  CIReNNSetting<-PatientLevelPrediction::setCIReNN(numberOfRNNLayer = c(1,2,3),units=c(64,128), recurrentDropout=c(0.3,0.4),layerDropout = c(0.4,0.5),
+                                                   lr =c(1e-4), decay=c(1e-5), 
+                                                   outcomeWeight = c(12.0),
                                                    batchSize = c(200), 
                                                    epochs = c(100),
-                                                   earlyStoppingMinDelta = c(1e-03), earlyStoppingPatience = c(5),
-                                                   useVae =T, vaeDataSamplingProportion = 1.0, vaeValidationSplit = 0.2,
+                                                   earlyStoppingMinDelta = c(1e-03), earlyStoppingPatience = c(6),
+                                                   useVae =T, vaeDataSamplingProportion = 1.0, vaeValidationSplit = 0.3,
                                                    vaeBatchSize = 100L, vaeLatentDim = 256, vaeIntermediateDim = 1024L,
-                                                   vaeEpoch = 100L, vaeEpislonStd = 1.0, seed = NULL)
+                                                   vaeEpoch = 3000L, vaeEpislonStd = 1.0, seed = NULL)
+  
+  # CIReNNSetting<-PatientLevelPrediction::setCIReNN(units=c(64), recurrentDropout=c(0.3),lr =c(1e-4), decay=c(1e-5), 
+  #                                                  outcomeWeight = c(1.0),
+  #                                                  batchSize = c(200), 
+  #                                                  epochs = c(100),
+  #                                                  earlyStoppingMinDelta = c(1e-03), earlyStoppingPatience = c(5),
+  #                                                  useVae =T, vaeDataSamplingProportion = 1.0, vaeValidationSplit = 0.2,
+  #                                                  vaeBatchSize = 100L, vaeLatentDim = 256, vaeIntermediateDim = 1024L,
+  #                                                  vaeEpoch = 100L, vaeEpislonStd = 1.0, seed = NULL)
   
   CIReNNModel <- PatientLevelPrediction::runPlp(temporalPopulation,
                                                 temporalPlpData,
