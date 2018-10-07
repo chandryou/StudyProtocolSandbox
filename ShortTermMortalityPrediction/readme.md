@@ -33,7 +33,7 @@ cdmDatabaseSchema <- 'cdm_database.dbo'
 cohortDatabaseSchema <- 'workdatabase.dbo'
 
 # table name where the cohorts will be generated
-cohortTable <- 'CVDRiskPredictionByDeepLearningCohort'
+cohortTable <- 'ShortTermMortalityPrediction'
 #=======================
 
 execute(connectionDetails = connectionDetails,
