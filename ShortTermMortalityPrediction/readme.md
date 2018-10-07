@@ -1,34 +1,42 @@
-A Package for Short-term mortality prediction Studies
-========================================================
+'''
+library(ShortTermMortalityPrediction)
 
-Instructions 
-===================
+# Specify where the temporary files (used by the ff package) will be created:
+options(fftempdir = "s:/FFtemp")
 
-  library('ShortTermMortalityPrediction')
-  connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = 'my dbms e.g., sql server',
-                                                                server = 'my server',
-                                                                user = 'my username',
-                                                                password = 'not telling',
-                                                                port = 'port number')
+# The folder where the study intermediate and result files will be written:
+outputFolder <- "s:/ShortTermMortalityPrediction"
+
+# Details for connecting to the server:
+dbms <- "pdw"
+user <- NULL
+pw <- NULL
+server <- Sys.getenv('server')
+port <- Sys.getenv('port')
+
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dbms,
+                                                                server = server,
+                                                                user = user,
+                                                                password = pw,
+                                                                port = port)
+
+# Add the database containing the OMOP CDM data
+cdmDatabaseSchema <- 'cdm_database.dbo'
+# Add a database with read/write access as this is where the cohorts will be generated
+cohortDatabaseSchema <- 'workdatabase.dbo'
+
+# table name where the cohorts will be generated
+cohortTable <- 'ShortTermMortalityPrediction'
+#=======================
+
 execute(connectionDetails = connectionDetails,
-                    cdmDatabaseSchema = 'your cdm schema',
-                    cohortDatabaseSchema = 'your cohort schema',
-                    cohortTable = "cohort",
-                    outcomeDatabaseSchema = 'your cohort schema',
-                    outcomeTable = "cohort",
-                    oracleTempSchema = cohortDatabaseSchema,
-                    outputFolder = 'my study results',
-                    createCohorts = TRUE,
-                    packageResults = TRUE,
-                    minCellCount= 5,
-                    packageName="ShortTermMortalityPrediction")
+        cdmDatabaseSchema = cdmDatabaseSchema,
+        cohortDatabaseSchema = cohortDatabaseSchema,
+        cohortTable = cohortTable,
+        outputFolder = outputFolder,
+        createCohorts = T,
+        runAnalyses = T,
+        packageResults = T,
+        createValidationPackage = F,
+        minCellCount= 5)
 ```
-- Step 7: You can then easily transport these results into a network study package by copying this package https://github.com/OHDSI/StudyProtocolSandbox/tree/master/PredictionNetworkStudySkeleton and running:
-  ```r
-  code to come soon
-```
-
-
-# Development status
-
-Under development. Do not use
