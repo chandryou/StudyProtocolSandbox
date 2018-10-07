@@ -1,6 +1,13 @@
-'''
-library(ShortTermMortalityPrediction)
+A Package for Short-Term Mortality Prediction Studies
+========================================================
 
+Instructions 
+===================
+
+```r
+  library(ShortTermMortalityPrediction)
+  # USER INPUTS
+#=======================
 # Specify where the temporary files (used by the ff package) will be created:
 options(fftempdir = "s:/FFtemp")
 
@@ -26,7 +33,7 @@ cdmDatabaseSchema <- 'cdm_database.dbo'
 cohortDatabaseSchema <- 'workdatabase.dbo'
 
 # table name where the cohorts will be generated
-cohortTable <- 'ShortTermMortalityPrediction'
+cohortTable <- 'CVDRiskPredictionByDeepLearningCohort'
 #=======================
 
 execute(connectionDetails = connectionDetails,
@@ -40,3 +47,6 @@ execute(connectionDetails = connectionDetails,
         createValidationPackage = F,
         minCellCount= 5)
 ```
+
+# Development status
+Under development. Do not use
